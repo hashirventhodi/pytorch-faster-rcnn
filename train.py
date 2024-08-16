@@ -27,6 +27,9 @@ def main():
         "val": Compose([ToTensor()])
     }
     
+    # Kaggle dataset path
+    # cfg.data_root_dir = "/kaggle/input/coco-mini-dataset-2017"
+     
     if not os.path.exists(cfg.data_root_dir):
         raise FileNotFoundError("dataset root dir not exist!")
 
