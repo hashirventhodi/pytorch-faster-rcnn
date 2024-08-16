@@ -13,12 +13,10 @@ from torch.utils.data import Dataset
 
 
 class coco(Dataset):
-    def __init__(self, root_dir, image_set, year, transforms=None):
+    def __init__(self, root_dir, annotation_file, transforms=None):
 
         self._root_dir = root_dir
-        self._year = year
-        self._image_set = image_set
-        self._data_name = image_set + year
+        self._annotation_file = annotation_file
         self._json_path = self._get_ann_file()
         self._transforms = transforms
 
@@ -45,8 +43,7 @@ class coco(Dataset):
         return len(self.anno['images'])
 
     def _get_ann_file(self):
-        prefix = 'instances' if self._image_set.find('test') == -1 else 'image_info'
-        return os.path.join(self._root_dir, 'annotations', prefix + '_' + self._image_set + self._year + '.json')
+        return os.path.join(self._root_dir,self._annotation_file)
 
     def _image_path_from_index(self, index):
         """

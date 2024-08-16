@@ -60,8 +60,8 @@ class Config:
     batch_size = 6
 
     num_class = 80 + 1  # foreground + 1 background
-    data_root_dir = " "
-    model_save_dir = " "
+    data_root_dir = "dataset"
+    model_save_dir = "model"
 
 
 cfg = Config()

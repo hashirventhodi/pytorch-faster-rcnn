@@ -25,12 +25,12 @@ def main():
         "train": Compose([ToTensor(), RandomHorizontalFlip(cfg.train_horizon_flip_prob)]),
         "val": Compose([ToTensor()])
     }
-
+    
     if not os.path.exists(cfg.data_root_dir):
         raise FileNotFoundError("dataset root dir not exist!")
 
     # load train data set
-    train_data_set = coco(cfg.data_root_dir, 'train', '2017', data_transform["train"])
+    train_data_set = coco(cfg.data_root_dir, 'train/annotations/annotations.json', data_transform["train"])
     batch_size = cfg.batch_size
     nw = min([os.cpu_count(), batch_size if batch_size > 1 else 0, 8])
     print('Using {} dataloader workers'.format(nw))
@@ -41,7 +41,7 @@ def main():
                                                     collate_fn=train_data_set.collate_fn)
 
     # load validation data set
-    val_data_set = coco(cfg.data_root_dir, 'val', '2017', data_transform["val"])
+    val_data_set = coco(cfg.data_root_dir, 'val/annotations/annotations.json', data_transform["val"])
     val_data_set_loader = torch.utils.data.DataLoader(val_data_set,
                                                       batch_size=batch_size,
                                                       shuffle=False,
