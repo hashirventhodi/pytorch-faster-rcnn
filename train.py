@@ -12,7 +12,8 @@ from utils.train_utils import train_one_epoch, write_tb, create_model
 
 
 def main():
-    device = torch.device(cfg.device_name)
+    # Automatic GPU Selection
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("Using {} device training.".format(device.type))
 
     if not os.path.exists(cfg.model_save_dir):
@@ -30,7 +31,7 @@ def main():
         raise FileNotFoundError("dataset root dir not exist!")
 
     # load train data set
-    train_data_set = coco(cfg.data_root_dir, 'train/annotations/annotations.json', data_transform["train"])
+    train_data_set = coco(cfg.data_root_dir, 'train/annotations/annotations.json', 'train/images/', data_transform["train"])
     batch_size = cfg.batch_size
     nw = min([os.cpu_count(), batch_size if batch_size > 1 else 0, 8])
     print('Using {} dataloader workers'.format(nw))
@@ -41,7 +42,7 @@ def main():
                                                     collate_fn=train_data_set.collate_fn)
 
     # load validation data set
-    val_data_set = coco(cfg.data_root_dir, 'val/annotations/annotations.json', data_transform["val"])
+    val_data_set = coco(cfg.data_root_dir, 'val/annotations/annotations.json', 'val/images', data_transform["val"])
     val_data_set_loader = torch.utils.data.DataLoader(val_data_set,
                                                       batch_size=batch_size,
                                                       shuffle=False,

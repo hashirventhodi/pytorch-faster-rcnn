@@ -13,10 +13,11 @@ from torch.utils.data import Dataset
 
 
 class coco(Dataset):
-    def __init__(self, root_dir, annotation_file, transforms=None):
+    def __init__(self, root_dir, annotation_file, images_dir, transforms=None):
 
         self._root_dir = root_dir
         self._annotation_file = annotation_file
+        self._images_dir = images_dir
         self._json_path = self._get_ann_file()
         self._transforms = transforms
 
@@ -52,14 +53,14 @@ class coco(Dataset):
         # Example image path for index=119993:
         #   images/train2014/COCO_train2014_000000119993.jpg
         file_name = (str(index).zfill(12) + '.jpg')
-        image_path = os.path.join(self._root_dir, self._data_name, file_name)
+        image_path = os.path.join(self._root_dir, self._images_dir, file_name)
         assert os.path.exists(image_path), 'Path does not exist: {}'.format(image_path)
         return image_path
 
     def __getitem__(self, idx):
         a = self.anno['images'][idx]
         image_idx = a['id']
-        img_path = os.path.join(self._root_dir, self._data_name, self._image_path_from_index(image_idx))
+        img_path = self._image_path_from_index(image_idx)
         image = Image.open(img_path)
 
         width = a['width']
